@@ -23,12 +23,12 @@ from classes.geneticalgorithm import GeneticAlgorithm
 # define chord progression
 C_chord = {'name': 'C', 'notes': [48, 52, 67]}
 G_chord = {'name': 'G', 'notes': [55, 59, 62]}
-D_chord = {'name': 'D', 'notes': [50, 66, 69]}
-A_chord = {'name': 'A', 'notes': [69, 49, 52]}
+Dm_chord = {'name': 'Dm', 'notes': [50, 53, 69]}
+Am_chord = {'name': 'Am', 'notes': [48, 57, 64]}
 E_chord = {'name': 'E', 'notes': [52, 68, 71]}
-B_chord = {'name': 'B', 'notes': [71, 51, 54]}
+Bdim_chord = {'name': 'Bdim', 'notes': [50, 59, 65]}
 
-progression = [C_chord, G_chord, D_chord, A_chord, E_chord, B_chord]
+progression = [C_chord, G_chord, Dm_chord, Am_chord, E_chord, Bdim_chord]
 progression_cycled = cycle(progression)
 iterprogression = iter(progression_cycled)
 
@@ -152,7 +152,7 @@ class OscServer(object):
                 time.sleep(dt)
 
             # wait until next initialization
-            time.sleep(2)
+            time.sleep(1)
 
         return
 
