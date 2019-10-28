@@ -10,7 +10,7 @@ class GeneticAlgorithm():
     class for genetic algorithm
     """
 
-    def __init__(self, standard_chord=None, min_note=48, max_note=71,
+    def __init__(self, standard_chord=None, min_note=48, max_note=72,
                  n_gen=None, size=100, n_best=40, n_rand=10, n_children=5,
                  mutation_rate=0.05, stopping=None, verbose=False):
         """
@@ -102,7 +102,7 @@ class GeneticAlgorithm():
 
         return chromo
 
-    def _new_chromosome(self, threshold=0.3):
+    def _new_chromosome(self, threshold):
         """
         Instantiate new chromosome
 
@@ -114,7 +114,7 @@ class GeneticAlgorithm():
         chromo[mask] = False
         return chromo
 
-    def _initilize(self, threshold=0.3):
+    def _initilize(self, threshold=0.5):
         """
         Initilize population at random.
 
@@ -219,7 +219,7 @@ class GeneticAlgorithm():
 
         return pop_next
 
-    def _mutate(self, pop, p=0.05):
+    def _mutate(self, pop, p=0.1):
         """
         Mutate each chromosome of the given population at given mutation rate
         defined in constructor, by excluding each note from each chromosome
@@ -243,7 +243,7 @@ class GeneticAlgorithm():
 
         return pop_next
 
-    def get_best_chords(self, n_rep_last=3):
+    def get_best_chords(self, n_rep_last=2):
         """
         Return best chords at each evolutionary iteration.
 
