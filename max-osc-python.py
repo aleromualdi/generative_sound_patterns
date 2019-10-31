@@ -18,8 +18,6 @@ PYTHON_NODE_SEND_PORT = 12000
 from classes.geneticalgorithm import GeneticAlgorithm
 
 
-################################################################
-
 # define chord progression
 C_chord = {'name': 'C', 'notes': [48, 52, 67]}
 G_chord = {'name': 'G', 'notes': [55, 59, 62]}
@@ -32,7 +30,6 @@ progression = [C_chord, G_chord, Dm_chord, Am_chord, E_chord, Bdim_chord]
 progression_cycled = cycle(progression)
 iterprogression = iter(progression_cycled)
 
-################################################################
 
 class OscServer(object):
     """
@@ -70,15 +67,15 @@ class OscServer(object):
         # legibility, the message callback methods have msg_ prepended to the
         # message, but this is not required.
 
-        # Assign methods to receive messages intended for debugging the system.
-        self.receiver.addCallback( "/quit",  self.msg_quit)
-        self.receiver.addCallback( "/ping",  self.msg_ping)
+        # TODO: Assign methods to receive messages intended for debugging the system.
+        # self.receiver.addCallback( "/quit",  self.msg_quit)
+        # self.receiver.addCallback( "/ping",  self.msg_ping)
 
         # Assign methods to receive from Max Msp.
         self.receiver.addCallback( "/nextframe", self.msg_nextframe)
 
-        # Assign methods to receive from Max Msp.
-        self.receiver.addCallback( "/nextnote", self.msg_nextnote)
+        # TODO Assign methods to receive from Max Msp.
+        # self.receiver.addCallback( "/nextnote", self.msg_nextnote)
 
         # Assign a default function to receive any other OSC message.
         self.receiver.fallback = self.msg_fallback
@@ -131,10 +128,10 @@ class OscServer(object):
             print('Evolving Genetic Algorithm...')
             ga = GeneticAlgorithm(
                                 standard_chord=chord['notes'],
-                                n_gen=100,
-                                stopping=1,
-                                size=100, n_best=40, n_rand=40, n_children=5,
-                                mutation_rate=0.05, verbose=False)
+                                n_rand=20,
+                                mutation_rate=0.04,
+                                stopping=0.5,
+                                )
 
             evol_chords = ga.evolve()
 
@@ -145,14 +142,13 @@ class OscServer(object):
                 # send the trajectory back to the source of the request
                 send_host = address[0]
                 self._client_protocol.send(msg, (send_host, self.send_portnum))
-
                 # sample from shifted Poisson distribution with lbd=1, size=1
                 # wait until next Poisson event
-                dt = np.random.poisson(1, 1) + 0.9
+                dt = np.random.poisson(1, 1) + 1.2
                 time.sleep(dt)
 
             # wait until next initialization
-            time.sleep(1)
+            time.sleep(1.2)
 
         return
 

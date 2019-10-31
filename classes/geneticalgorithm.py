@@ -1,7 +1,6 @@
 import numpy as np
 import random
 from scipy.spatial import distance
-# import matplotlib.pyplot as plt
 from pychord import Chord as pyChord
 
 
@@ -11,26 +10,25 @@ class GeneticAlgorithm():
     """
 
     def __init__(self, standard_chord=None, min_note=48, max_note=72,
-                 n_gen=None, size=100, n_best=40, n_rand=10, n_children=5,
-                 mutation_rate=0.05, stopping=None, verbose=False):
+                 n_gen=100, size=100, n_best=40, n_rand=10, n_children=5,
+                 mutation_rate=0.05, stopping=None):
         """
         Constructor.
 
         :param standard_chord: standard chord the algorithm evolves to
         :param min_note: int (default=48), lower midi note
-        :param max_note: int (default=71), higher midi note
-        :param n_gen: number of evolutionary generations
-        :param size: (default=100), number of chromosomes in population
-        :param n_best: (default=40), number of best chromosomes to select
+        :param max_note: int (default=72), higher midi note
+        :param n_gen: int (default=100) number of maximum evolutionary generations
+        :param size: int (default=100), number of chromosomes in the initial population
+        :param n_best: int (default=40), number of best chromosomes to select
             at each evolutionary step
-        :param n_rand: (default=10), number of random chromosomes to select
+        :param n_rand: int (default=10), number of random chromosomes to select
             at each evolutionary step, on top of the n_best ones.
-        :param n_children: (default=5), number of children created during crossover
-        :param mutation_rate: (default=0.05) probablity of chromosome mutation
-        :param stopping: (default=None), if not none defines the minimum
+        :param n_children: int (default=5), number of children created during crossover
+        :param mutation_rate: int (default=0.05) probablity of chromosome mutation
+        :param stopping: int (default=None), if not none defines the minimum
             distance between the best and the current best chromosome as a
             stopping criterion
-        :param verbose: control verbosity
 
 
         Example:
@@ -58,13 +56,12 @@ class GeneticAlgorithm():
         self.best_chromosomes = []
         self.scores_best = []
         self.scores_avg = []
-        self.verbose = verbose
 
     def _check_chord(self, chord):
         """
         Check chord.
 
-        :param chord:
+        :param chord: list of midi notes
         :raise ValueError: if provided chord does not contain supported midi notes
         """
 
@@ -73,7 +70,7 @@ class GeneticAlgorithm():
                              "Please provide a list of supported midi notes.")
 
     def _chord_components(self, chord, lowercase=True):
-        """ find chord components """
+        """ Find chord components """
 
         # ToDO: convert chord name to midi
 
@@ -90,7 +87,8 @@ class GeneticAlgorithm():
         Chord to chromosome mask.
 
         :param chord: list of midi notes.
-        :return chromo: chromosome mask, as bool list of midi note numbers
+        :return chromo: chromosome mask, as list of bool representing midi note
+            numbers
         """
 
         chromo = []
@@ -102,11 +100,13 @@ class GeneticAlgorithm():
 
         return chromo
 
-    def _new_chromosome(self, threshold):
+    def _new_chromosome(self, threshold=0.3):
         """
-        Instantiate new chromosome
+        Instantiate new chromosome.
 
         :param threshold: float (default=0.3), controls notes to be included
+        :return chromo: chromosome mask, as list of bool representing midi note
+            numbers
         """
 
         chromo = np.ones(len(self.midi_notes), dtype=np.bool)
@@ -114,20 +114,18 @@ class GeneticAlgorithm():
         chromo[mask] = False
         return chromo
 
-    def _initilize(self, threshold=0.5):
+    def _initilize(self):
         """
         Initilize population at random.
 
-        :param threshold: float (0, 1) (default=0.3), controls the amount of
-            notes to be included in each chromosome
         :return pop: list of chromosome masks
         """
 
         pop = []
         for i in range(self.size):
-            chromo = self._new_chromosome(threshold)
+            chromo = self._new_chromosome()
             while len(chromo) < 5:
-                chromo = self._new_chromosome(threshold)
+                chromo = self._new_chromosome()
             pop.append(chromo)
         return pop
 
@@ -162,8 +160,8 @@ class GeneticAlgorithm():
 
     def _fitness(self, pop):
         """
-        Evaluate fitness of a list of chromoosmes and returns the sorted
-        lists of scores and relative chromosomes.
+        Evaluate fitness of a list of chromoosmes and returns the sorted lists
+        of scores and relative chromosomes.
 
         :param pop: list of chromosomes
         :return: (list, list) sorted lists
@@ -176,6 +174,7 @@ class GeneticAlgorithm():
         scores, pop = np.array(scores), np.array(pop)
         inds = np.argsort(scores)
         self.current_fitness = np.mean(scores)
+
         return list(scores[inds]), list(pop[inds, :])
 
     def _select(self, pop_sorted):
@@ -219,7 +218,7 @@ class GeneticAlgorithm():
 
         return pop_next
 
-    def _mutate(self, pop, p=0.1):
+    def _mutate(self, pop, p=0.05):
         """
         Mutate each chromosome of the given population at given mutation rate
         defined in constructor, by excluding each note from each chromosome
@@ -243,11 +242,11 @@ class GeneticAlgorithm():
 
         return pop_next
 
-    def get_best_chords(self, n_rep_last=2):
+    def get_best_chords(self, n_rep_last=1):
         """
         Return best chords at each evolutionary iteration.
 
-        :param n_rep_last: int (default=3), repeat last chord
+        :param n_rep_last: int (default=1), repeat last chord
         :return best_chords: list
         """
 
@@ -259,8 +258,9 @@ class GeneticAlgorithm():
         # This choice is for estetical purpose only
         last_chromo_evol = self.best_chromosomes[-1]
 
-        for _ in range(abs(int(n_rep_last))):
-            best_chords.append(self.midi_notes[last_chromo_evol])
+        if n_rep_last:
+            for _ in range(abs(int(n_rep_last))):
+                best_chords.append(self.midi_notes[last_chromo_evol])
 
         return best_chords
 
@@ -290,7 +290,7 @@ class GeneticAlgorithm():
         Evolve genetic algorithm and returns the best chords for each
         evolutionary step.
 
-        :return best_chords:
+        :return best_chords: list best chords across evolution
         """
 
         iteration = 0
@@ -306,13 +306,3 @@ class GeneticAlgorithm():
             self.population = self._generate(self.population)
 
         return self.get_best_chords()
-
-    # def plot_scores(self):
-    #     """ plot scores """
-    #
-    #     plt.plot(self.scores_best, label='Best')
-    #     plt.plot(self.scores_avg, label='Average')
-    #     plt.legend()
-    #     plt.ylabel('Scores')
-    #     plt.xlabel('Generation')
-    #     plt.show()
