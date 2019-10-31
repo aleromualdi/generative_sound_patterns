@@ -126,11 +126,20 @@ class OscServer(object):
 
             # evolve genetic algorithm
             print('Evolving Genetic Algorithm...')
+            # ga = GeneticAlgorithm(
+            #                     standard_chord=chord['notes'],
+            #                     n_best=30, # 40
+            #                     n_rand=20, # 20
+            #                     mutation_rate=0.04, # 0.04
+            #                     stopping=0.5, # 0.5
+            #                     )
+
             ga = GeneticAlgorithm(
                                 standard_chord=chord['notes'],
-                                n_rand=20,
-                                mutation_rate=0.04,
-                                stopping=0.5,
+                                n_best=40, # 40
+                                n_rand=20, # 20
+                                mutation_rate=0.05, # 0.04
+                                stopping=1.0,
                                 )
 
             evol_chords = ga.evolve()
@@ -144,7 +153,11 @@ class OscServer(object):
                 self._client_protocol.send(msg, (send_host, self.send_portnum))
                 # sample from shifted Poisson distribution with lbd=1, size=1
                 # wait until next Poisson event
-                dt = np.random.poisson(1, 1) + 1.2
+
+                # dt = np.random.poisson(1, 1) + 1.2
+                # dt = np.random.power(1, 1)[0] + 1.8
+                dt = np.random.gamma(1, 1, 1)[0] + 1.1
+
                 time.sleep(dt)
 
             # wait until next initialization

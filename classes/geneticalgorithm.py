@@ -100,7 +100,7 @@ class GeneticAlgorithm():
 
         return chromo
 
-    def _new_chromosome(self, threshold=0.3):
+    def _new_chromosome(self, threshold=0.5):
         """
         Instantiate new chromosome.
 
@@ -242,11 +242,11 @@ class GeneticAlgorithm():
 
         return pop_next
 
-    def get_best_chords(self, n_rep_last=1):
+    def get_best_chords(self, n_rep_last=None):
         """
         Return best chords at each evolutionary iteration.
 
-        :param n_rep_last: int (default=1), repeat last chord
+        :param n_rep_last: int (default=None), repeat last chord
         :return best_chords: list
         """
 
@@ -294,15 +294,15 @@ class GeneticAlgorithm():
         """
 
         iteration = 0
-
         while iteration < self.n_gen:
-            if self.stopping:
-                if iteration > 2:
-                    cchromo = self.best_chromosomes[-1]
-                    if (self._cost(cchromo) < self.stopping) and (len(cchromo == 3)):
-                        return self.get_best_chords()
-
             iteration += 1
+
+            if iteration > 2:
+                if self.stopping:
+                        cchromo = self.best_chromosomes[-1]
+                        if (self._cost(cchromo) < self.stopping) and (len(cchromo == 3)):
+                            return self.get_best_chords()
+
             self.population = self._generate(self.population)
 
         return self.get_best_chords()
