@@ -4,7 +4,7 @@ Authors: Alessandro Romualdi (Berlin), Stefano Tucci (Berlin)
 
 ## Project description:
 
-This repository contains the Python code and Max patches for a composition presented at [eufonia-festival 2019](https://www.eufonia-festival.com).
+This repository contains the Python code and Max patches for a composition presented at [eufonia-festival 2019](https://eufonia.io/).
 
 The composition is being built by the means of a Genetic Algorithm, beginning with a population of set of pitches/colours, which is initialised randomly. Through evolutionary processes, such as mutation and natural selection, the algorithm cuts out bad solutions and creates new ones from those surviving the process. The listener will perceive an endless and ever-changing generative production of harmonious chords through the evolutionary steps of the algorithm. The convergence of initially randomly generated notes towards each chord triads is emphasised by visual patterns. 
 
