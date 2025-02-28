@@ -14,10 +14,14 @@ The composition is being built by the means of a Genetic Algorithm, beginning wi
 The `max-osc-python.py` script runs on Python 2.7. The patch `max-osc-python.maxpat` was developed using Max 8.1.0.
 Installation of the required packages can be executed with 
 
-- pip install -r requirements.txt
+  ```
+  pip install -r requirements.txt
+  ```
 
 After running the python script with
 
-- python max-osc-python.py
+  ```
+  python max-osc-python.py
+  ```
 
 Open the Max patch `max-osc-python.maxpat`.
